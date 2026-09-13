@@ -1,39 +1,54 @@
 import {
-  db, auth, ref, get, set,
-  signInWithEmailAndPassword, signOut, onAuthStateChanged, push,
+  db, auth, ref, get, set, onValue, remove, push,
+  signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  GoogleAuthProvider, signInWithPopup,
 } from "../firebase.js";
 import { emptyPoints } from "../config.js";
 import { seasonYears } from "../season.js";
 import { renderEventEditor, pointsGrid } from "../components/event-editor.js";
+import { renderAdmins } from "../components/admins.js";
+import { normalizeEmail, emailKey, isValidEmail } from "../admins-util.js";
 
 document.getElementById("year").textContent = seasonYears();
 
 const sections = {
   login: document.getElementById("login-section"),
+  notAdmin: document.getElementById("not-admin-section"),
   user: document.getElementById("user-section"),
   editor: document.getElementById("editor-section"),
 };
 
-function showLoggedOut() {
-  sections.login.style.display = "block";
-  sections.user.style.display = "none";
-  sections.editor.style.display = "none";
-}
-
-function showLoggedIn(user) {
-  sections.login.style.display = "none";
-  sections.user.style.display = "block";
-  sections.editor.style.display = "block";
-  document.getElementById("user-email").textContent = user.email;
-}
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    showLoggedIn(user);
-    startEditing();
-  } else {
-    showLoggedOut();
+function show(active) {
+  for (const [name, element] of Object.entries(sections)) {
+    element.style.display = name === active || (active === "admin" && (name === "user" || name === "editor")) ? "block" : "none";
   }
+}
+
+let currentEmail = "";
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    show("login");
+    return;
+  }
+
+  currentEmail = normalizeEmail(user.email);
+
+  try {
+    await get(ref(db, "admins"));
+  } catch {
+    document.getElementById("not-admin-email").textContent = user.email;
+    show("notAdmin");
+    return;
+  }
+
+  document.getElementById("user-email").textContent = user.email;
+  show("admin");
+  enterAdmin();
+});
+
+document.getElementById("login-google").addEventListener("click", () => {
+  signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => alert(error.message));
 });
 
 document.getElementById("login").addEventListener("click", () => {
@@ -43,10 +58,47 @@ document.getElementById("login").addEventListener("click", () => {
 });
 
 document.getElementById("logout").addEventListener("click", () => signOut(auth));
+document.getElementById("logout-not-admin").addEventListener("click", () => signOut(auth));
+
+let started = false;
+
+function enterAdmin() {
+  if (started) return;
+  started = true;
+
+  wireEditor();
+  wireAdmins();
+}
+
+function wireAdmins() {
+  const container = document.getElementById("admins");
+
+  const handlers = {
+    get currentEmail() { return currentEmail; },
+    onAdd: (value) => {
+      const email = normalizeEmail(value);
+      if (!isValidEmail(email)) {
+        alert("Enter a valid email address.");
+        return false;
+      }
+      set(ref(db, `admins/${emailKey(email)}`), email);
+      return true;
+    },
+    onRemove: (email) => {
+      if (email === currentEmail) return;
+      if (confirm(`Remove ${email} as an admin? They'll lose access immediately.`)) {
+        remove(ref(db, `admins/${emailKey(email)}`));
+      }
+    },
+  };
+
+  onValue(ref(db, "admins"), (snapshot) => {
+    renderAdmins(container, snapshot.val() || {}, handlers);
+  });
+}
 
 const draft = { events: {}, miscPoints: {}, countdown: 0 };
 let dirty = false;
-let started = false;
 
 const publishButton = document.getElementById("publish");
 const discardButton = document.getElementById("discard");
@@ -67,10 +119,18 @@ function markClean() {
   indicator.textContent = "All changes published";
 }
 
-async function startEditing() {
-  if (started) return;
-  started = true;
+async function loadDraft() {
+  const [events, miscPoints, countdown] = await Promise.all([
+    get(ref(db, "public/events")),
+    get(ref(db, "public/miscPoints")),
+    get(ref(db, "public/countdown")),
+  ]);
+  draft.events = events.val() || {};
+  draft.miscPoints = miscPoints.val() || {};
+  draft.countdown = Number(countdown.val()) || 0;
+}
 
+async function wireEditor() {
   await loadDraft();
   renderAll();
 
@@ -83,17 +143,6 @@ async function startEditing() {
   window.addEventListener("beforeunload", (event) => {
     if (dirty) event.preventDefault();
   });
-}
-
-async function loadDraft() {
-  const [events, miscPoints, countdown] = await Promise.all([
-    get(ref(db, "public/events")),
-    get(ref(db, "public/miscPoints")),
-    get(ref(db, "public/countdown")),
-  ]);
-  draft.events = events.val() || {};
-  draft.miscPoints = miscPoints.val() || {};
-  draft.countdown = Number(countdown.val()) || 0;
 }
 
 function renderAll() {

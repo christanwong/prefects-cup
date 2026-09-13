@@ -25,4 +25,5 @@ export {
 
 export {
   signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  GoogleAuthProvider, signInWithPopup,
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
