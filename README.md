@@ -8,11 +8,11 @@ The website itself is implemented with plain HTML, CSS, and JS. The libraries us
 
 Firebase is used as the backend, and Github Pages is used to host, following the previous site implementation.
 
-This repo's predecessor is at https://github.com/mattxwang/prefects-cup-website, written by [Matthew Wang](https://matthewwang.me). The code proper in this new repo was written from scratch, but I used their favicons and house colors.
+This repo's predecessor is at https://github.com/mattxwang/prefects-cup-website, written by [Matthew Wang](https://matthewwang.me). The code proper in this new repo was written from scratch, but I used their favicons and house colors, and followed their design philosophy and library choice.
 
 ## How points work
 
-There is this notion of events: each event allows a house to earn points. Each house's points are dynamically calculated from the points they got from an event. In the case that you want to add to or subtract from a house's points, there is a hidden "Miscellaneous" event that does not show up on the events list publically but still contributes to scores.
+There is this notion of "events": each event allows a house to earn points. Each house's points are dynamically calculated from the points they got from an event. In the case that you want to add to or subtract from a house's points, there is a hidden "Miscellaneous" event that does not show up on the events list publically but still contributes to scores.
 
 ## Data model
 
@@ -29,7 +29,7 @@ public/
 
 ## Setup
 
-1. Create [Firebase](https://firebase.google.com/) Realtime Database, turn on Email/Password and/or Google authentication, and copy your web config into `js/firebase.js`.
+1. Create a [Firebase](https://firebase.google.com/) Realtime Database, turn on Email/Password and/or Google authentication, and copy your web config into `js/firebase.js`.
 2. Then set the database rules such that the public can read but only whitelisted accounts can write:
 
    ```json
@@ -66,4 +66,4 @@ public/
 
 ## Credit
 
-This is a complete rewrite of the original Prefects' Cup website by [Matthew Wang](https://matthewwang.me). Licensed under Apache 2.0 (see `LICENSE.md`).
+This is a complete rewrite of the original Prefects' Cup website by [Matthew Wang](https://matthewwang.me), and is licensed under Apache 2.0 (see `LICENSE.md`).
