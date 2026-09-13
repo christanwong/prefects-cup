@@ -24,7 +24,10 @@
     </header>
 
     <section class="section" id="login-section" style="display:none">
-      <div class="container">
+      <div class="container" style="max-width: 420px">
+        <button class="button is-link is-fullwidth mb-5" id="login-google">Sign in with Google</button>
+
+        <p class="muted has-text-centered mb-4">or sign in with a password</p>
         <div class="field">
           <div class="control">
             <input class="input" type="email" placeholder="Email" id="email">
@@ -36,15 +39,22 @@
           </div>
         </div>
         <div class="control">
-          <button class="button is-link" id="login">Login</button>
+          <button class="button" id="login">Sign in</button>
         </div>
+      </div>
+    </section>
+
+    <section class="section" id="not-admin-section" style="display:none">
+      <div class="container">
+        <p class="mb-2">You're signed in as <strong id="not-admin-email"></strong>, but you're not an admin yet. Ask an existing admin to add your email.</p>
+        <button class="button is-danger is-small" id="logout-not-admin">Sign out</button>
       </div>
     </section>
 
     <section class="section" id="user-section" style="display:none">
       <div class="container">
         <p class="mb-2">Signed in as <strong id="user-email"></strong>.</p>
-        <button class="button is-danger is-small" id="logout">Logout</button>
+        <button class="button is-danger is-small" id="logout">Sign out</button>
       </div>
     </section>
 
@@ -78,6 +88,14 @@
 
         <h2 class="title is-4">Events</h2>
         <div id="events-editor"></div>
+
+        <h2 class="title is-4 mt-6">Admins</h2>
+        <div class="card mb-6">
+          <div class="card-content">
+            <p class="mb-4 muted">People who can edit the site. Anyone added here can sign in with that email and manage scores, events, and admins.</p>
+            <div id="admins"></div>
+          </div>
+        </div>
       </div>
     </section>
 
