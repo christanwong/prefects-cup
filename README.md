@@ -30,7 +30,7 @@ public/
 ## Setup
 
 1. Create a [Firebase](https://firebase.google.com/) Realtime Database, turn on Email/Password and/or Google authentication, and copy your web config into `js/firebase.js`.
-2. Then set the database rules such that the public can read but only whitelisted accounts can write:
+2. Then set the database rules such that the public can read but only admins can write:
 
    ```json
    {
@@ -39,22 +39,27 @@ public/
        ".write": false,
        "public": {
          ".read": true,
-         ".write": "root.child('allowedUids').child(auth.uid).exists()"
+         ".write": "root.child('admins').child(auth.token.email.toLowerCase().replace('.', ',')).exists()"
+       },
+       "admins": {
+         ".read": "root.child('admins').child(auth.token.email.toLowerCase().replace('.', ',')).exists()",
+         ".write": "root.child('admins').child(auth.token.email.toLowerCase().replace('.', ',')).exists()"
        }
      }
    }
    ```
 
-3. Create an `allowedUids` object listing each editor's UID in your database:
+3. Add the first admin email to your database (note that periods must be replaced using commas in the key):
 
    ```json
    {
-     "allowedUids": {
-       "<UID_1>": true,
-       "<UID_2>": true
+     "admins": {
+       "you@ucc,on,ca": "you@ucc.on.ca"
      }
    }
    ```
+
+   And now admins can add other admins using the manage page, so no more mucking about in Firebase is needed!
 
 4. A local server is needed for development (for example by running `python3 -m http.server`) because ES modules don't load using `file://`.
 
