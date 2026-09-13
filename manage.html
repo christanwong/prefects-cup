@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Prefects' Cup management">
+    <title>Prefects' Cup — Manage</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="img/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="img/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <header class="hero-pc">
+      <div class="container">
+        <p class="hero-eyebrow"><span id="year"></span> · Management</p>
+        <h1 class="hero-title"><span class="trophy">🏆</span> The Prefects' Cup</h1>
+      </div>
+    </header>
+
+    <section class="section" id="login-section" style="display:none">
+      <div class="container">
+        <div class="field">
+          <div class="control">
+            <input class="input" type="email" placeholder="Email" id="email">
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <input class="input" type="password" placeholder="Password" id="password">
+          </div>
+        </div>
+        <div class="control">
+          <button class="button is-link" id="login">Login</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="user-section" style="display:none">
+      <div class="container">
+        <p class="mb-2">Signed in as <strong id="user-email"></strong>.</p>
+        <button class="button is-danger is-small" id="logout">Logout</button>
+      </div>
+    </section>
+
+    <section class="section" id="editor-section" style="display:none">
+      <div class="container">
+        <div id="publish-bar">
+          <button class="button is-success" id="publish" disabled>Publish changes</button>
+          <button class="button is-light" id="discard" disabled>Discard</button>
+          <span id="dirty-indicator" class="muted"></span>
+        </div>
+
+        <h2 class="title is-4">Countdown</h2>
+        <div class="card mb-6">
+          <div class="card-content">
+            <div class="field">
+              <div class="control">
+                <input class="input" type="datetime-local" id="countdown">
+              </div>
+            </div>
+            <p class="help">The winning house is announced on the home page at that date.</p>
+          </div>
+        </div>
+
+        <h2 class="title is-4">Miscellaneous Points</h2>
+        <div class="card mb-6">
+          <div class="card-content">
+            <p class="mb-4 muted">This is for manual point adjustments that aren't related to any event.</p>
+            <div id="misc-points"></div>
+          </div>
+        </div>
+
+        <h2 class="title is-4">Events</h2>
+        <div id="events-editor"></div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p><a href="index.html">Home</a> | <a href="manage.html">Manage</a></p>
+      </div>
+    </footer>
+
+    <script type="module" src="js/pages/manage.js"></script>
+  </body>
+</html>
