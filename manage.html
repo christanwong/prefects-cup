@@ -38,16 +38,33 @@
             <input class="input" type="password" placeholder="Password" id="password">
           </div>
         </div>
-        <div class="control">
-          <button class="button" id="login">Sign in</button>
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button" id="login">Sign in</button>
+          </div>
+          <div class="control">
+            <button class="button" id="signup">Create account</button>
+          </div>
         </div>
+        <p class="muted mt-3">Create an account with your UCC email if you're an admin.</p>
       </div>
     </section>
 
     <section class="section" id="not-admin-section" style="display:none">
       <div class="container">
-        <p class="mb-2">You're signed in as <strong id="not-admin-email"></strong>, but you're not an admin yet. Ask an existing admin to add your email.</p>
+        <p class="mb-2">You're signed in as <strong id="not-admin-email"></strong> but aren't an admin. Ask someone who is an existing admin to add you.</p>
         <button class="button is-danger is-small" id="logout-not-admin">Sign out</button>
+      </div>
+    </section>
+
+    <section class="section" id="verify-section" style="display:none">
+      <div class="container">
+        <p class="mb-2">You have to verify <strong id="verify-email"></strong>. There should be an email sent to your inbox (fingers crossed).</p>
+        <p class="muted mb-4">Reload the page after you click the link.</p>
+        <div class="buttons">
+          <button class="button is-link" id="resend-verification">Resend email</button>
+          <button class="button is-danger" id="logout-verify">Sign out</button>
+        </div>
       </div>
     </section>
 
@@ -92,7 +109,7 @@
         <h2 class="title is-4 mt-6">Admins</h2>
         <div class="card mb-6">
           <div class="card-content">
-            <p class="mb-4 muted">People who can edit the site. Anyone added here can sign in with that email and manage scores, events, and admins.</p>
+            <p class="mb-4 muted">These are people who are authorized to edit the site. They can sign in with that email and manage scores, events, and admins.</p>
             <div id="admins"></div>
           </div>
         </div>

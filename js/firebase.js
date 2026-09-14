@@ -24,6 +24,6 @@ export {
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
 export {
-  signInWithEmailAndPassword, signOut, onAuthStateChanged,
-  GoogleAuthProvider, signInWithPopup,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification,
+  signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup,
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";

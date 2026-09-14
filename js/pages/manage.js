@@ -1,7 +1,7 @@
 import {
   db, auth, ref, get, set, onValue, remove, push,
-  signInWithEmailAndPassword, signOut, onAuthStateChanged,
-  GoogleAuthProvider, signInWithPopup,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification,
+  signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup,
 } from "../firebase.js";
 import { emptyPoints } from "../config.js";
 import { seasonYears } from "../season.js";
@@ -13,6 +13,7 @@ document.getElementById("year").textContent = seasonYears();
 
 const sections = {
   login: document.getElementById("login-section"),
+  verify: document.getElementById("verify-section"),
   notAdmin: document.getElementById("not-admin-section"),
   user: document.getElementById("user-section"),
   editor: document.getElementById("editor-section"),
@@ -29,6 +30,12 @@ let currentEmail = "";
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     show("login");
+    return;
+  }
+
+  if (!user.emailVerified) {
+    document.getElementById("verify-email").textContent = user.email;
+    show("verify");
     return;
   }
 
@@ -57,8 +64,24 @@ document.getElementById("login").addEventListener("click", () => {
   signInWithEmailAndPassword(auth, email, password).catch((error) => alert(error.message));
 });
 
+document.getElementById("signup").addEventListener("click", () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((credential) => sendEmailVerification(credential.user))
+    .catch((error) => alert(error.message));
+});
+
+document.getElementById("resend-verification").addEventListener("click", () => {
+  if (!auth.currentUser) return;
+  sendEmailVerification(auth.currentUser)
+    .then(() => alert("Verification email sent."))
+    .catch((error) => alert(error.message));
+});
+
 document.getElementById("logout").addEventListener("click", () => signOut(auth));
 document.getElementById("logout-not-admin").addEventListener("click", () => signOut(auth));
+document.getElementById("logout-verify").addEventListener("click", () => signOut(auth));
 
 let started = false;
 
