@@ -26,8 +26,15 @@ function show(active) {
 }
 
 let currentEmail = "";
+let activeUid = null;
 
 onAuthStateChanged(auth, async (user) => {
+  if (started && user && user.uid === activeUid) return;
+  if (started && (!user || user.uid !== activeUid)) {
+    window.location.reload();
+    return;
+  }
+
   if (!user) {
     show("login");
     return;
@@ -39,6 +46,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  activeUid = user.uid;
   currentEmail = normalizeEmail(user.email);
 
   try {
